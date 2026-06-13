@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String     @id @default(cuid())
+  email            String     @unique
+  password         String
+  name             String?
+  plan             String     @default("free")
+  stripeCustomerId String?
+  createdAt        DateTime   @default(now())
+  analyses         Analysis[]
+}
+
+model Analysis {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  imageUrl       String
+  recommendation String
+  confidence     Int
+  reasoning      String
+  marketType     String
+  signals        String
+  createdAt      DateTime @default(now())
+}
