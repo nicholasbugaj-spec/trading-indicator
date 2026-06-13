@@ -20,6 +20,10 @@ import {
   ArrowRight,
   ChevronDown,
   ChevronUp,
+  Target,
+  AlertTriangle,
+  DollarSign,
+  Flame,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -191,6 +195,102 @@ export function AnalysisResultCard({
         </CardContent>
       </Card>
 
+      {/* Undervalued markets */}
+      {result.signals?.undervaluedMarkets && result.signals.undervaluedMarkets.length > 0 && (
+        <Card>
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1 h-4 rounded-full bg-gradient-to-b from-yellow-500 to-orange-500" />
+              <Flame className="h-4 w-4 text-yellow-500" />
+              <h3 className="text-sm font-semibold text-text-primary">Undervalued Markets</h3>
+            </div>
+            <ul className="space-y-2">
+              {result.signals.undervaluedMarkets.map((market, i) => (
+                <li key={i} className="flex items-start gap-2 p-2.5 bg-yellow-500/5 border border-yellow-500/20 rounded-lg">
+                  <span className="text-yellow-500 mt-0.5 flex-shrink-0">◆</span>
+                  <span className="text-sm text-text-primary">{market}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Price targets */}
+      {result.signals?.priceTargets && result.signals.priceTargets.length > 0 && (
+        <Card>
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-1 h-4 rounded-full bg-gradient-to-b from-primary to-accent" />
+              <Target className="h-4 w-4 text-primary" />
+              <h3 className="text-sm font-semibold text-text-primary">Price Targets & Entry Points</h3>
+            </div>
+            <div className="space-y-4">
+              {result.signals.priceTargets.map((pt, i) => {
+                const actionColor =
+                  pt.action === "BUY"
+                    ? "text-green-400 bg-green-500/10 border-green-500/30"
+                    : pt.action === "SELL"
+                    ? "text-red-400 bg-red-500/10 border-red-500/30"
+                    : "text-yellow-400 bg-yellow-500/10 border-yellow-500/30";
+
+                return (
+                  <div key={i} className="rounded-xl border border-border bg-surface-2 overflow-hidden">
+                    {/* Header row */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                      <div className="flex items-center gap-2">
+                        <span className={cn("text-xs font-bold px-2 py-0.5 rounded border", actionColor)}>
+                          {pt.action}
+                        </span>
+                        <span className="text-sm font-medium text-text-primary">{pt.outcome}</span>
+                        {pt.undervalued && (
+                          <span className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-1.5 py-0.5 rounded">
+                            UNDERVALUED
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-sm font-bold text-primary">{pt.edgePercent}</span>
+                    </div>
+
+                    {/* Price grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y sm:divide-y-0 divide-border">
+                      <div className="p-3">
+                        <div className="flex items-center gap-1 mb-1">
+                          <DollarSign className="h-3 w-3 text-muted" />
+                          <p className="text-xs text-muted">Current Price</p>
+                        </div>
+                        <p className="text-sm font-mono font-semibold text-text-primary">{pt.currentOdds}</p>
+                      </div>
+                      <div className="p-3">
+                        <div className="flex items-center gap-1 mb-1">
+                          <TrendingUp className="h-3 w-3 text-green-400" />
+                          <p className="text-xs text-muted">Enter At</p>
+                        </div>
+                        <p className="text-sm font-mono font-semibold text-green-400">{pt.targetEntry}</p>
+                      </div>
+                      <div className="p-3">
+                        <div className="flex items-center gap-1 mb-1">
+                          <Target className="h-3 w-3 text-primary" />
+                          <p className="text-xs text-muted">Take Profit</p>
+                        </div>
+                        <p className="text-sm font-mono font-semibold text-primary">{pt.targetExit}</p>
+                      </div>
+                      <div className="p-3">
+                        <div className="flex items-center gap-1 mb-1">
+                          <AlertTriangle className="h-3 w-3 text-red-400" />
+                          <p className="text-xs text-muted">Stop Loss</p>
+                        </div>
+                        <p className="text-sm font-mono font-semibold text-red-400">{pt.stopLoss}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Signal breakdown */}
       {showSignals && result.signals && (
         <Card>
@@ -215,8 +315,8 @@ export function AnalysisResultCard({
             {signalsExpanded && (
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 animate-fade-in">
                 {result.signals.oddsValue && (
-                  <div className="p-3 bg-surface-2 rounded-lg">
-                    <p className="text-xs text-muted mb-1">Odds Value</p>
+                  <div className="p-3 bg-surface-2 rounded-lg sm:col-span-2">
+                    <p className="text-xs text-muted mb-1">Odds Value Summary</p>
                     <p className="text-sm text-text-primary">
                       {result.signals.oddsValue}
                     </p>
@@ -224,9 +324,17 @@ export function AnalysisResultCard({
                 )}
                 {result.signals.impliedProbability && (
                   <div className="p-3 bg-surface-2 rounded-lg">
-                    <p className="text-xs text-muted mb-1">Implied Probability</p>
+                    <p className="text-xs text-muted mb-1">Market Implied Probability</p>
                     <p className="text-sm text-text-primary font-mono">
                       {result.signals.impliedProbability}
+                    </p>
+                  </div>
+                )}
+                {result.signals.trueEstimatedProbability && (
+                  <div className="p-3 bg-surface-2 rounded-lg border border-primary/20">
+                    <p className="text-xs text-muted mb-1">True Estimated Probability</p>
+                    <p className="text-sm font-mono font-bold text-primary">
+                      {result.signals.trueEstimatedProbability}
                     </p>
                   </div>
                 )}

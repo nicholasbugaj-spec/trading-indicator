@@ -8,13 +8,27 @@ export type MarketType =
 
 export type Plan = "basic" | "elite";
 
+export interface PriceTarget {
+  action: "BUY" | "SELL" | "HOLD";
+  outcome: string;        // e.g. "Team A to win", "YES", "Over 2.5"
+  currentOdds: string;    // e.g. "2.45" or "-110"
+  targetEntry: string;    // best price to enter at
+  targetExit: string;     // take profit level
+  stopLoss: string;       // stop loss level
+  edgePercent: string;    // e.g. "+8.3% edge"
+  undervalued: boolean;
+}
+
 export interface AnalysisSignals {
   oddsValue?: string;
   impliedProbability?: string;
+  trueEstimatedProbability?: string;
   lineMovement?: string;
   volumeIndicator?: string;
   marketSentiment?: string;
   keyFactors?: string[];
+  undervaluedMarkets?: string[];
+  priceTargets?: PriceTarget[];
 }
 
 export interface AnalysisResult {
