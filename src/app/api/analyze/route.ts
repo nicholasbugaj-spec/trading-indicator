@@ -48,8 +48,8 @@ export async function POST(req: NextRequest) {
     if (!canUpload(plan, uploadsToday)) {
       const planLimits: Record<Plan, number> = {
         free: 3,
-        basic: 20,
-        elite: Infinity,
+        basic: 5,
+        elite: 15,
       };
       return NextResponse.json(
         {
