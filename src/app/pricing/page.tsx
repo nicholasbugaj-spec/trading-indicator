@@ -1,4 +1,5 @@
 import { PricingCards } from "@/components/pricing/pricing-cards";
+import { DiscountCode } from "@/components/pricing/discount-code";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Plan } from "@/types";
@@ -28,6 +29,8 @@ export default async function PricingPage() {
       </div>
 
       <PricingCards currentPlan={currentPlan} />
+
+      <DiscountCode />
 
       {/* FAQ */}
       <div className="mt-24 max-w-2xl mx-auto">

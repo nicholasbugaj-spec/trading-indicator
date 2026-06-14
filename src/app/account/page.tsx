@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { DiscountCode } from "@/components/pricing/discount-code";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -248,6 +249,9 @@ export default function AccountPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* Discount code */}
+        <DiscountCode />
 
         {/* Danger zone */}
         <Card>

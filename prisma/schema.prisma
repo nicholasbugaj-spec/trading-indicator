@@ -20,6 +20,25 @@ model User {
   analyses               Analysis[]
 }
 
+model DiscountCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  plan        String   // "basic" | "elite"
+  usesLeft    Int?     // null = unlimited
+  usesTotal   Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  redemptions CodeRedemption[]
+}
+
+model CodeRedemption {
+  id        String       @id @default(cuid())
+  userId    String
+  codeId    String
+  code      DiscountCode @relation(fields: [codeId], references: [id])
+  redeemedAt DateTime    @default(now())
+}
+
 model Analysis {
   id             String   @id @default(cuid())
   userId         String
