@@ -8,7 +8,7 @@ export type MarketType =
   | "financial"
   | "generic";
 
-export type Plan = "basic" | "elite";
+export type Plan = "free" | "basic" | "elite";
 
 export interface PriceTarget {
   action: "BUY" | "SELL" | "HOLD";

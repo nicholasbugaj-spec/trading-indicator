@@ -16,7 +16,7 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const plan = ((session?.user as { plan?: string })?.plan ?? "elite") as Plan;
+  const plan = ((session?.user as { plan?: string })?.plan ?? "free") as Plan;
 
   useEffect(() => {
     if (status === "unauthenticated") {

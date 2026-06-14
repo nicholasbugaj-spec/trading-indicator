@@ -3,7 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { analyzeMarketImage } from "@/lib/ai/analyzer";
-import { canUpload } from "@/lib/plans";
+import { mockAnalyzeMarketImage } from "@/lib/ai/mock-analyzer";
+import { canUpload, useRealAI } from "@/lib/plans";
 import { Plan } from "@/types";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
 
     if (!canUpload(plan, uploadsToday)) {
       const planLimits: Record<Plan, number> = {
+        free: 3,
         basic: 20,
         elite: Infinity,
       };
@@ -89,8 +91,10 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await imageFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Run AI analysis
-    const analysisResult = await analyzeMarketImage(buffer, imageFile.type);
+    // Free plan gets mock results — no API cost
+    const analysisResult = useRealAI(plan)
+      ? await analyzeMarketImage(buffer, imageFile.type)
+      : await mockAnalyzeMarketImage();
 
     // Save to database
     const saved = await prisma.analysis.create({

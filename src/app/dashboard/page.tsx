@@ -15,7 +15,7 @@ export default function DashboardPage() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [uploadsUsed, setUploadsUsed] = useState(0);
 
-  const plan = ((session?.user as { plan?: string })?.plan ?? "elite") as Plan;
+  const plan = ((session?.user as { plan?: string })?.plan ?? "free") as Plan;
   const planDef = getPlan(plan);
 
   useEffect(() => {
@@ -85,6 +85,19 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Free plan demo banner */}
+      {plan === "free" && (
+        <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-yellow-400">⚡ You&apos;re on the Free plan — Demo mode</p>
+            <p className="text-xs text-text-secondary mt-0.5">Results are simulated examples. Upgrade to get real AI analysis of your actual screenshots.</p>
+          </div>
+          <a href="/pricing" className="flex-shrink-0 text-xs font-semibold px-4 py-2 rounded-lg bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/30 transition-colors whitespace-nowrap">
+            Upgrade for real AI →
+          </a>
+        </div>
+      )}
 
       {/* Upload zone */}
       <div className="bg-surface border border-border rounded-2xl p-6 mb-8">

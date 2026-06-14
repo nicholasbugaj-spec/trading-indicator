@@ -19,7 +19,7 @@ export function PricingCards({ currentPlan }: PricingCardsProps) {
   const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
-  const planOrder: Plan[] = ["basic", "elite"];
+  const planOrder: Plan[] = ["free", "basic", "elite"];
 
   async function handleSubscribe(planId: Plan) {
     if (!session) {
@@ -48,10 +48,10 @@ export function PricingCards({ currentPlan }: PricingCardsProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
       {planOrder.map((planId) => {
         const plan = PLANS[planId];
-        const isPro = planId === "elite";
+        const isPro = planId === "basic";
         const isCurrent = currentPlan === planId;
         const isLoading = loading === planId;
 
@@ -122,6 +122,12 @@ export function PricingCards({ currentPlan }: PricingCardsProps) {
               <Button variant="secondary" disabled className="w-full">
                 Current Plan
               </Button>
+            ) : planId === "free" ? (
+              <Link href="/auth/register">
+                <Button variant="secondary" className="w-full">
+                  Start for Free
+                </Button>
+              </Link>
             ) : (
               <Button
                 variant={isPro ? "primary" : "outline"}

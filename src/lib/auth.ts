@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.plan = (user as { plan?: string }).plan ?? "elite";
+        token.plan = (user as { plan?: string }).plan ?? "free";
       }
       return token;
     },
